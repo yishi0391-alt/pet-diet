@@ -358,14 +358,14 @@ let selFood=null;
 function searchFood(){const q=document.getElementById('foodSearchInput').value.trim().toLowerCase();const foods=getAllFoods();const r=!q?foods:foods.filter(f=>f.n.toLowerCase().includes(q)||(f.icon||'').includes(q));document.getElementById('foodResults').innerHTML=r.slice(0,20).map(f=>{const tc=f.h==='green'?'tag-green':f.h==='yellow'?'tag-yellow':'tag-red';return`<div class="food-result" onclick="selectFood('${f.n}')"><div class="fi">${f.icon||'🍽️'}</div><div class="info"><div class="n">${f.n}</div><div class="c">${f.cal}kcal/100g</div><div class="macros">蛋${f.p}g·碳${f.c}g·脂${f.f}g</div></div><span class="tag ${tc}">${f.h==='green'?'健康':f.h==='yellow'?'一般':'⚠不健康'}</span></div>`;}).join('');}
 function selectFood(name){selFood=getAllFoods().find(f=>f.n===name);if(!selFood)return;document.getElementById('foodSelName').innerHTML=(selFood.icon||'🍽️')+' '+selFood.n;document.getElementById('foodSelCal').textContent=selFood.cal;const tc=selFood.h==='green'?'tag-green':selFood.h==='yellow'?'tag-yellow':'tag-red';document.getElementById('foodSelTag').innerHTML=`<span class="tag ${tc}">${tc.includes('green')?'健康':tc.includes('yellow')?'一般':'⚠不健康'}</span>`;document.getElementById('foodAmount').value=100;document.getElementById('foodLogForm').classList.add('show');if(selFood.h==='red'){const t=getDailyTargets();document.getElementById('foodWarn').textContent='⚠不健康食品！记录后健康-5，金币-3'+(t?`。建议每日脂肪<${t.fat}g`:'');document.getElementById('foodWarn').classList.add('show');}else document.getElementById('foodWarn').classList.remove('show');calcFoodPrev();}
 function calcFoodPrev(){if(!selFood)return;const amt=parseInt(document.getElementById('foodAmount').value)||100,s=amt/100;document.getElementById('foodMacroPrev').textContent=`≈${Math.round(selFood.cal*s)}kcal | 蛋白质${(selFood.p*s).toFixed(1)}g·碳水${(selFood.c*s).toFixed(1)}g·脂肪${(selFood.f*s).toFixed(1)}g`;}
-function saveFoodLog(){if(!selFood)return;const amt=parseInt(document.getElementById('foodAmount').value)||100,s=amt/100,cals=Math.round(selFood.cal*s),pro=Math.round(selFood.p*s*10)/10,carb=Math.round(selFood.c*s*10)/10,fat=Math.round(selFood.f*s*10)/10;
-  let coins=0,he=0;if(selFood.h==='green'){coins=Math.floor(cals/50)+3;he=5;}else if(selFood.h==='yellow'){coins=Math.floor(cals/80)+1;he=0;}else{coins=0;he=-5;data.coins=Math.max(0,data.coins-3);}
+function saveFoodLog(){if(!selFood)return;const sf=selFood;const amt=parseInt(document.getElementById('foodAmount').value)||100,s=amt/100,cals=Math.round(sf.cal*s),pro=Math.round(sf.p*s*10)/10,carb=Math.round(sf.c*s*10)/10,fat=Math.round(sf.f*s*10)/10;
+  let coins=0,he=0;if(sf.h==='green'){coins=Math.floor(cals/50)+3;he=5;}else if(sf.h==='yellow'){coins=Math.floor(cals/80)+1;he=0;}else{coins=0;he=-5;data.coins=Math.max(0,data.coins-3);}
   data.coins=Math.max(0,data.coins+(coins>0?coins:0));if(coins>0)data.totalCoins+=coins;data.health=Math.max(0,Math.min(100,data.health+he));data.todayCals+=cals;data.todayPro+=pro;data.todayCarb+=carb;data.todayFat+=fat;data.hunger=Math.min(100,data.hunger+Math.floor(amt/20));
-  data.foodLogs.unshift({n:selFood.n,icon:selFood.icon||'🍽️',amt,cals,pro,carb,fat,h:selFood.h,time:new Date().toLocaleTimeString(),date:today()});if(data.foodLogs.length>80)data.foodLogs.pop();
-  data.logs.unshift({type:'food',desc:`${selFood.icon||''}${selFood.n}${amt}g·${cals}kcal`,coins,time:new Date().toLocaleTimeString(),date:today()});data.caredToday=true;saveData();
+  data.foodLogs.unshift({n:sf.n,icon:sf.icon||'🍽️',amt,cals,pro,carb,fat,h:sf.h,time:new Date().toLocaleTimeString(),date:today()});if(data.foodLogs.length>80)data.foodLogs.pop();
+  data.logs.unshift({type:'food',desc:`${sf.icon||''}${sf.n}${amt}g·${cals}kcal`,coins,time:new Date().toLocaleTimeString(),date:today()});data.caredToday=true;saveData();
+  if(sf.h==='green')toast(`🟢 健康食品！健康+${he}，+${coins}💰`);else if(sf.h==='yellow')toast(`🟡 记录成功！+${coins}💰`);else toast(`🔴 不健康食品！健康${he}，金币-3`);
   document.getElementById('foodLogForm').classList.remove('show');selFood=null;renderFoodDiary();renderNutriSummary();renderHome();checkAchievements();
-  const t=getDailyTargets();if(t){if(data.todayFat>t.fat*1.3)toast('⚠今日脂肪已超标！');else if(data.todayCarb>t.carb*1.3)toast('⚠今日碳水已超标！');}
-  const h=selFood?selFood.h:'';if(h==='green')toast(`🟢健康食品！+${coins}💰`);else if(h==='yellow')toast(`🟡记录成功！+${coins}💰`);else toast(`🔴不健康食品！健康-5`);
+  const t=getDailyTargets();if(t){if(data.todayFat>t.fat*1.3)toast('⚠ 今日脂肪已超标！');else if(data.todayCarb>t.carb*1.3)toast('⚠ 今日碳水已超标！');}
 }
 function cancelFood(){document.getElementById('foodLogForm').classList.remove('show');selFood=null;}
 function photoFood(){const i=document.createElement('input');i.type='file';i.accept='image/*';i.capture='environment';i.onchange=function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){const img=new Image();img.onload=function(){const c=document.createElement('canvas'),mw=200,s=mw/img.width;c.width=mw;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);const thumb=c.toDataURL('image/jpeg',0.6),desc=prompt('这是什么食物？简单描述：');if(!desc)return;data.todayCals+=Math.floor(Math.random()*200+100);data.coins+=5;data.totalCoins+=5;data.hunger=Math.min(100,data.hunger+10);data.mood=Math.min(100,data.mood+3);data.logs.unshift({type:'food',desc:'📸'+desc,coins:5,time:new Date().toLocaleTimeString(),photo:thumb,date:today()});data.foodLogs.unshift({n:desc,icon:'📸',amt:0,cals:Math.floor(Math.random()*200+100),pro:0,carb:0,fat:0,h:'yellow',time:new Date().toLocaleTimeString(),date:today(),photo:thumb});data.caredToday=true;saveData();toast('📸记录成功！+5💰');renderFoodDiary();renderNutriSummary();renderHome();};img.src=ev.target.result;};r.readAsDataURL(f);};i.click();}
@@ -379,23 +379,99 @@ function renderNutriSummary(){
 // ===== 运动 =====
 const EX_MET={pedometer:4,run:8,rope:11,swim:8,bike:7.5,walk:5,yoga:3,strength:6,timer:5};
 const EX_NAMES={pedometer:'🚶计步',run:'🏃户外跑',rope:'🤸跳绳',swim:'🏊游泳',bike:'🚴骑行',walk:'🚶‍♂️快走',yoga:'🧘瑜伽',strength:'💪力量',timer:'⏱️自由'};
+const EX_LABELS={pedometer:'步',run:'公里',rope:'次',swim:'分钟',bike:'分钟',walk:'步',yoga:'分钟',strength:'分钟',timer:'秒'};
 function getUserWeight(){if(data.weightLog.length>0)return data.weightLog[data.weightLog.length-1].weight;if(data.profile.height>0)return Math.max(50,data.profile.height-105);return 65;}
-let es={mode:'pedometer',status:'idle',startTime:0,elapsed:0,pauseStart:0,steps:0,distance:0,calories:0,lastPosition:null,gpsWatchId:null,timerInterval:null,motionHandler:null,lastPeak:0,lastAccel:0,summary:null};
+let es={mode:'pedometer',status:'idle',startTime:0,elapsed:0,steps:0,distance:0,calories:0,lastPosition:null,gpsWatchId:null,timerInterval:null,motionHandler:null,lastPeak:0,lastAccel:0,summary:null};
 function ft(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
-function selExMode(m){if(es.status!=='idle')return;es.mode=m;document.querySelectorAll('.ex-type-card').forEach(el=>el.classList.remove('active'));const card=document.querySelector(`.ex-type-card[data-mode="${m}"]`);if(card)card.classList.add('active');document.getElementById('exLabel').textContent=['pedometer','run'].includes(m)?'步':m==='run'?'公里':'秒';document.getElementById('gpsInfo').style.display=m==='run'?'block':'none';resetExUI();}
-function resetExUI(){document.getElementById('exBig').textContent='0';document.getElementById('exTime').textContent='00:00';document.getElementById('exCal').textContent='0';document.getElementById('exDist').textContent='0.00';document.getElementById('exStatus').textContent='点击▶开始';document.getElementById('exCircle').classList.remove('running');document.getElementById('exBtnGo').style.display='';document.getElementById('exBtnPause').style.display='';document.getElementById('exBtnStop').disabled=true;document.getElementById('exBtnPause').disabled=true;}
-function exStart(){if(es.status==='running')return;const go=()=>{es.status='running';es.startTime=es.elapsed===0?Date.now():Date.now()-es.elapsed;document.getElementById('exCircle').classList.add('running');document.getElementById('exStatus').textContent=EX_NAMES[es.mode]+'进行中...';document.getElementById('exBtnStop').disabled=false;document.getElementById('exBtnPause').disabled=false;if(es.mode==='pedometer')startPed();else if(es.mode==='run')startGPS();es.timerInterval=setInterval(updateEx,200);};if(es.mode==='pedometer'&&typeof DeviceMotionEvent!=='undefined'){if(typeof DeviceMotionEvent.requestPermission==='function'){DeviceMotionEvent.requestPermission().then(p=>p==='granted'?go():toast('需要传感器权限')).catch(()=>toast('权限被拒绝'));}else go();}else go();}
-function exPause(){if(es.status==='running'){es.status='paused';es.pauseStart=Date.now();es.elapsed=Date.now()-es.startTime;document.getElementById('exCircle').classList.remove('running');document.getElementById('exStatus').textContent='⏸已暂停';clearInterval(es.timerInterval);stopSens();}else if(es.status==='paused')exStart();}
-function exStop(){if(es.status==='idle')return;es.elapsed=Date.now()-es.startTime;if(es.status==='paused')es.elapsed-=(Date.now()-es.pauseStart);es.status='idle';clearInterval(es.timerInterval);stopSens();document.getElementById('exCircle').classList.remove('running');const w=getUserWeight();let coins=0;if(es.mode==='pedometer'){coins=Math.floor(es.steps/100)*3;coins=Math.max(5,Math.min(50,coins));es.distance=es.steps*.7/1000;es.calories=Math.floor(es.steps*.04);}else if(es.mode==='run'){coins=Math.floor(es.distance/100)*5;coins=Math.max(5,Math.min(60,coins));es.calories=Math.floor(es.distance/1000*60);}else{const met=EX_MET[es.mode]||5,hrs=es.elapsed/3600000;es.calories=Math.round(met*w*hrs);coins=Math.floor(es.calories/8);coins=Math.max(5,Math.min(60,coins));}es.summary={mode:es.mode,steps:es.steps,distance:es.distance,calories:es.calories,duration:es.elapsed,coins};showExSumm();}
-function startPed(){es.motionHandler=function(e){const a=e.accelerationIncludingGravity||e.acceleration;if(!a||a.x===null)return;const mag=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z),now=Date.now();if(mag>11.5&&now-es.lastPeak>250&&mag>es.lastAccel){es.steps++;es.lastPeak=now;updateEx();}es.lastAccel=mag;};window.addEventListener('devicemotion',es.motionHandler);}
-function stopSens(){if(es.motionHandler){window.removeEventListener('devicemotion',es.motionHandler);es.motionHandler=null;}if(es.gpsWatchId!==null){navigator.geolocation.clearWatch(es.gpsWatchId);es.gpsWatchId=null;}}
+
+function selExMode(m){
+  if(es.status!=='idle'){toast('请先停止当前运动');return;}
+  es.mode=m;document.querySelectorAll('.ex-type-card').forEach(el=>el.classList.remove('active'));
+  const card=document.querySelector(`.ex-type-card[data-mode="${m}"]`);if(card)card.classList.add('active');
+  document.getElementById('exLabel').textContent=EX_LABELS[m]||'秒';
+  document.getElementById('gpsInfo').style.display=m==='run'?'block':'none';
+  resetExUI();
+}
+
+function resetExUI(){
+  document.getElementById('exBig').textContent='0';document.getElementById('exTime').textContent='00:00';
+  document.getElementById('exCal').textContent='0';document.getElementById('exDist').textContent='0.00';
+  document.getElementById('exStatus').textContent='点击▶开始';document.getElementById('exCircle').classList.remove('running');
+  document.getElementById('exBtnStop').disabled=true;document.getElementById('exBtnPause').disabled=true;
+}
+
+function exStart(){
+  if(es.status==='running')return;
+  es.status='running';es.startTime=Date.now()-(es.elapsed||0);
+  document.getElementById('exCircle').classList.add('running');document.getElementById('exStatus').textContent=EX_NAMES[es.mode]+'进行中...';
+  document.getElementById('exBtnStop').disabled=false;document.getElementById('exBtnPause').disabled=false;
+  if(es.mode==='pedometer')startPed();else if(es.mode==='run')startGPS();
+  clearInterval(es.timerInterval);es.timerInterval=setInterval(updateEx,200);
+}
+
+function exPause(){
+  if(es.status==='running'){
+    es.status='paused';es.elapsed=Date.now()-es.startTime;
+    document.getElementById('exCircle').classList.remove('running');document.getElementById('exStatus').textContent='⏸ 已暂停';
+    clearInterval(es.timerInterval);stopSensors();
+  }else if(es.status==='paused'){
+    exStart();
+  }
+}
+
+function exStop(){
+  const wasRunning=es.status!=='idle';
+  es.status='idle';clearInterval(es.timerInterval);stopSensors();
+  document.getElementById('exCircle').classList.remove('running');
+  document.getElementById('exBtnStop').disabled=true;document.getElementById('exBtnPause').disabled=true;
+  if(!wasRunning)return;
+
+  es.elapsed=Date.now()-es.startTime;if(es.elapsed<2000){toast('运动时间太短，至少2秒');resetExUI();resetEx();return;}
+  const w=getUserWeight();let coins=0;
+  if(es.mode==='pedometer'){coins=Math.floor(es.steps/100)*3;coins=Math.max(5,Math.min(50,coins));es.distance=es.steps*.7/1000;es.calories=Math.floor(es.steps*.04);}
+  else if(es.mode==='run'){coins=Math.floor(es.distance/100)*5;coins=Math.max(5,Math.min(60,coins));es.calories=Math.floor(es.distance/1000*60);}
+  else{const met=EX_MET[es.mode]||5;es.calories=Math.round(met*w*(es.elapsed/3600000));coins=Math.floor(es.calories/8);coins=Math.max(5,Math.min(60,coins));}
+  es.summary={mode:es.mode,steps:es.steps,distance:es.distance,calories:es.calories,duration:es.elapsed,coins};
+  showExSumm();
+}
+
+function startPed(){
+  try{window.addEventListener('devicemotion',es.motionHandler=function(e){const a=e.accelerationIncludingGravity||e.acceleration;if(!a||a.x===null)return;const mag=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z),now=Date.now();if(mag>11.5&&now-es.lastPeak>250&&mag>es.lastAccel){es.steps++;es.lastPeak=now;}es.lastAccel=mag;});}catch(e){}
+}
+function stopSensors(){
+  try{if(es.motionHandler){window.removeEventListener('devicemotion',es.motionHandler);es.motionHandler=null;}}catch(e){}
+  try{if(es.gpsWatchId!==null){navigator.geolocation.clearWatch(es.gpsWatchId);es.gpsWatchId=null;}}catch(e){}
+}
 function hv(lat1,lon1,lat2,lon2){const R=6371000,tr=d=>d*Math.PI/180,dLa=tr(lat2-lat1),dLo=tr(lon2-lon1),a=Math.sin(dLa/2)**2+Math.cos(tr(lat1))*Math.cos(tr(lat2))*Math.sin(dLo/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
-function startGPS(){if(!navigator.geolocation){toast('设备不支持GPS');return;}const gi=document.getElementById('gpsInfo');gi.classList.remove('good');gi.style.display='block';es.gpsWatchId=navigator.geolocation.watchPosition(p=>{const{latitude,longitude,accuracy}=p.coords;gi.classList.add('good');gi.innerHTML='<span class="dot"></span>GPS良好'+((accuracy||0).toFixed(0))+'m';if(es.lastPosition){const d=hv(es.lastPosition.lat,es.lastPosition.lon,latitude,longitude);if(d<50&&d>.5)es.distance+=d;}es.lastPosition={lat:latitude,lon:longitude};},()=>{gi.innerHTML='<span class="dot"></span>GPS信号弱';gi.classList.remove('good');},{enableHighAccuracy:true,timeout:10000,maximumAge:0});}
-function updateEx(){const elapsed=es.status==='paused'?es.elapsed:Date.now()-es.startTime;document.getElementById('exTime').textContent=ft(elapsed);if(es.mode==='pedometer'){document.getElementById('exBig').textContent=es.steps;document.getElementById('exDist').textContent=(es.steps*.7/1000).toFixed(2);document.getElementById('exCal').textContent=Math.floor(es.steps*.04);}else if(es.mode==='run'){const dkm=(es.distance/1000).toFixed(2);document.getElementById('exBig').textContent=dkm;document.getElementById('exDist').textContent=dkm;document.getElementById('exCal').textContent=Math.floor(es.distance/1000*60);}else{const w=getUserWeight(),met=EX_MET[es.mode]||5,hrs=elapsed/3600000;es.calories=Math.round(met*w*hrs);document.getElementById('exBig').textContent=Math.floor(elapsed/1000);document.getElementById('exCal').textContent=es.calories;document.getElementById('exDist').textContent='--';}}
-function showExSumm(){const s=es.summary;document.getElementById('summGrid').innerHTML=`<div class="sg"><div class="n">${ft(s.duration)}</div><div class="l">时长</div></div><div class="sg"><div class="n">${s.steps||0}</div><div class="l">${es.mode==='pedometer'?'步数':'计数'}</div></div><div class="sg"><div class="n">${s.distance.toFixed(2)}</div><div class="l">距离km</div></div><div class="sg"><div class="n">${s.calories}</div><div class="l">消耗kcal</div></div>`;document.getElementById('summEarn').textContent=`💰+${s.coins}金币`;document.getElementById('exSummary').classList.add('show');}
-function confirmEx(){const s=es.summary;if(!s)return;data.coins+=s.coins;data.totalCoins+=s.coins;data.mood=Math.min(100,data.mood+10);data.hunger=Math.max(0,data.hunger-15);data.health=Math.min(100,data.health+3);data.todaySteps+=s.steps;data.logs.unshift({type:'exercise',desc:`${EX_NAMES[s.mode]}·${ft(s.duration)}·${s.steps>0?s.steps+'步':''}${s.distance>0?(s.distance/1000).toFixed(2)+'km':''}·${s.calories}kcal`,coins:s.coins,time:new Date().toLocaleTimeString(),date:today()});data.caredToday=true;saveData();resetEx();document.getElementById('exSummary').classList.remove('show');resetExUI();toast(`🏆${EX_NAMES[s.mode]}完成！+${s.coins}💰`);checkDaily();renderHome();checkAchievements();}
+function startGPS(){
+  if(!navigator.geolocation){toast('设备不支持GPS');return;}
+  const gi=document.getElementById('gpsInfo');gi.classList.remove('good');gi.style.display='block';
+  es.gpsWatchId=navigator.geolocation.watchPosition(p=>{const{latitude,longitude,accuracy}=p.coords;gi.classList.add('good');gi.innerHTML='<span class="dot"></span>GPS良好 '+((accuracy||0).toFixed(0))+'m';if(es.lastPosition){const d=hv(es.lastPosition.lat,es.lastPosition.lon,latitude,longitude);if(d<50&&d>.5)es.distance+=d;}es.lastPosition={lat:latitude,lon:longitude};},()=>{gi.innerHTML='<span class="dot"></span>GPS信号弱';gi.classList.remove('good');},{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+}
+function updateEx(){
+  const elapsed=Date.now()-es.startTime;document.getElementById('exTime').textContent=ft(elapsed);
+  if(es.mode==='pedometer'){document.getElementById('exBig').textContent=es.steps;document.getElementById('exDist').textContent=(es.steps*.7/1000).toFixed(2);document.getElementById('exCal').textContent=Math.floor(es.steps*.04);}
+  else if(es.mode==='run'){document.getElementById('exBig').textContent=(es.distance/1000).toFixed(2);document.getElementById('exDist').textContent=(es.distance/1000).toFixed(2);document.getElementById('exCal').textContent=Math.floor(es.distance/1000*60);}
+  else{const met=EX_MET[es.mode]||5;es.calories=Math.round(met*getUserWeight()*(elapsed/3600000));document.getElementById('exBig').textContent=Math.floor(elapsed/1000);document.getElementById('exCal').textContent=es.calories;document.getElementById('exDist').textContent='--';}
+}
+
+function showExSumm(){
+  const s=es.summary;if(!s)return;
+  document.getElementById('summGrid').innerHTML=`<div class="sg"><div class="n">${ft(s.duration)}</div><div class="l">时长</div></div><div class="sg"><div class="n">${s.steps||0}</div><div class="l">${es.mode==='pedometer'?'步数':'计数'}</div></div><div class="sg"><div class="n">${(s.distance||0).toFixed(2)}</div><div class="l">距离km</div></div><div class="sg"><div class="n">${s.calories}</div><div class="l">消耗kcal</div></div>`;
+  document.getElementById('summEarn').textContent=`💰 +${s.coins} 金币`;
+  document.getElementById('exSummary').classList.add('show');
+}
+
+function confirmEx(){
+  const s=es.summary;if(!s)return;
+  data.coins+=s.coins;data.totalCoins+=s.coins;data.mood=Math.min(100,data.mood+10);data.hunger=Math.max(0,data.hunger-15);data.health=Math.min(100,data.health+3);
+  data.todaySteps+=s.steps;data.logs.unshift({type:'exercise',desc:`${EX_NAMES[s.mode]} · ${ft(s.duration)}${s.steps>0?' · '+s.steps+'步':''}${s.distance>0?' · '+(s.distance/1000).toFixed(2)+'km':''} · ${s.calories}kcal`,coins:s.coins,time:new Date().toLocaleTimeString(),date:today()});data.caredToday=true;
+  saveData();resetEx();document.getElementById('exSummary').classList.remove('show');resetExUI();
+  toast(`🏆 ${EX_NAMES[s.mode]}完成！+${s.coins}💰`);checkDaily();renderHome();checkAchievements();
+}
+
 function discardEx(){resetEx();document.getElementById('exSummary').classList.remove('show');resetExUI();toast('已丢弃');}
-function resetEx(){es.elapsed=0;es.steps=0;es.distance=0;es.calories=0;es.summary=null;es.lastPosition=null;es.lastPeak=0;}
+function resetEx(){es.elapsed=0;es.steps=0;es.distance=0;es.calories=0;es.summary=null;es.lastPosition=null;es.lastPeak=0;es.status='idle';}
 
 // ===== 每周报告 =====
 function showWeekly(){
