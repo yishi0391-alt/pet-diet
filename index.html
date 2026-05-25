@@ -122,23 +122,37 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f0e8;m
 .evo-popup .ne{font-size:54px;}.evo-popup button{margin-top:4px;padding:5px 16px;border:none;border-radius:12px;background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;font-size:13px;cursor:pointer;}
 
 /* ===== 新手引导 ===== */
-.tutorial-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);z-index:200;justify-content:center;align-items:center;flex-direction:column;}
+.tutorial-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,#fff8e7 0%,#f5e6cc 40%,#e8d5b7 40%,#d4a76a 100%);z-index:200;flex-direction:column;overflow:hidden;}
 .tutorial-overlay.show{display:flex;}
-.tut-card{background:#fff;border-radius:20px;padding:24px 20px;width:90%;max-width:360px;text-align:center;animation:tutIn .4s ease;}
-@keyframes tutIn{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}
-.tut-card .tut-emoji{font-size:60px;animation:float 2s ease-in-out infinite;}
-.tut-card h2{color:#f5576c;margin:8px 0 4px;font-size:20px;}
-.tut-card .tut-steps{text-align:left;margin:12px 0;}
-.tut-card .tut-step{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f5f0e8;}
-.tut-card .tut-step .si{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#ff9a9e,#f5576c);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;flex-shrink:0;}
-.tut-card .tut-step .st{flex:1;font-size:12px;color:#666;}.tut-card .tut-step .st b{color:#333;}
-.tut-card .tut-dots{display:flex;justify-content:center;gap:6px;margin:10px 0;}
-.tut-card .tut-dot{width:8px;height:8px;border-radius:50%;background:#e0d5c5;transition:all .3s;}
-.tut-card .tut-dot.active{background:#f5576c;width:24px;border-radius:4px;}
-.tut-card .tut-btns{display:flex;gap:8px;}
-.tut-card .tut-btns button{flex:1;padding:10px;border:none;border-radius:10px;font-size:14px;cursor:pointer;}
+.tut-top{text-align:center;padding:16px 20px 8px;flex-shrink:0;}
+.tut-top .tut-step-label{font-size:11px;color:#b8956a;margin-bottom:2px;}
+.tut-top .tut-step-label span{background:#ff9a9e;color:#fff;padding:1px 8px;border-radius:8px;font-weight:bold;}
+.tut-top h2{font-size:18px;color:#6b5b4f;margin:4px 0;}
+
+/* 宠物引导角色 */
+.tut-pet-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-height:200px;}
+.tut-pet{font-size:80px;animation:float 3s ease-in-out infinite;}
+.tut-pet-bubble{position:absolute;top:10%;left:50%;transform:translateX(-50%);background:#fff;border-radius:14px;padding:10px 18px;font-size:14px;color:#6b5b4f;box-shadow:0 4px 16px rgba(0,0,0,.1);max-width:85%;text-align:center;animation:tutBub .4s ease;white-space:nowrap;}
+.tut-pet-bubble::after{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #fff;}
+@keyframes tutBub{0%{opacity:0;transform:translateX(-50%)translateY(10px)}100%{opacity:1;transform:translateX(-50%)translateY(0)}}
+
+.tut-choices{display:flex;flex-direction:column;gap:10px;padding:0 30px 20px;flex-shrink:0;}
+.tut-choice-row{display:flex;gap:10px;}
+.tut-choice{flex:1;padding:18px 10px;border-radius:16px;border:3px solid #f0e6d3;background:#fff;text-align:center;cursor:pointer;transition:all .2s;font-size:14px;color:#6b5b4f;}
+.tut-choice:active{transform:scale(.96);}
+.tut-choice.selected{border-color:#ff9a9e;background:#fff5f5;box-shadow:0 0 0 3px rgba(255,154,158,.2);}
+.tut-choice .ticon{font-size:40px;display:block;margin-bottom:4px;}
+.tut-choice .tname{font-weight:bold;}
+.tut-choice .tdesc{font-size:10px;color:#b8956a;margin-top:2px;}
+
+.tut-input{width:100%;padding:14px 16px;border:3px solid #f0e6d3;border-radius:14px;font-size:16px;text-align:center;outline:none;background:#fff;margin-bottom:8px;}
+.tut-input:focus{border-color:#ff9a9e;}
+.tut-input-row{display:flex;gap:8px;}.tut-input-row>*{flex:1;}
+
+.tut-btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:16px;font-weight:bold;cursor:pointer;transition:transform .15s;}
+.tut-btn:active{transform:scale(.96);}
 .tut-btn-pri{background:linear-gradient(135deg,#ff9a9e,#f5576c);color:#fff;}
-.tut-btn-ghost{background:#f5f0e8;color:#999;}
+.tut-btn-dis{background:#e0d5c5;color:#bbb;cursor:not-allowed;}
 .ex-summary{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:100;justify-content:center;align-items:center;}.ex-summary.show{display:flex;}
 .summ-card{background:#fff;border-radius:12px;padding:14px;width:90%;max-width:300px;text-align:center;font-size:12px;}.summ-card h3{margin-bottom:4px;}.summ-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:4px 0;}.summ-grid .sg{background:#faf5ed;border-radius:5px;padding:5px;font-size:10px;}.summ-grid .sg .n{font-size:16px;font-weight:bold;color:#ff6b6b;}.summ-earn{font-size:14px;color:#f5576c;margin:3px 0;}
 .summ-card button{width:100%;padding:6px;border:none;border-radius:6px;font-size:13px;cursor:pointer;margin-top:2px;background:linear-gradient(135deg,#ff9a9e,#fad0c4);color:#fff;}.summ-card button.ghost{background:#eee;color:#999;}
@@ -265,7 +279,9 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f0e8;m
 
 <!-- 新手引导 -->
 <div class="tutorial-overlay" id="tutorialOverlay">
-  <div class="tut-card" id="tutCard"></div>
+  <div class="tut-top"><div class="tut-step-label" id="tutStepLabel">步骤 <span>1</span>/5</div><h2 id="tutTitle">选择你的宠物</h2></div>
+  <div class="tut-pet-area"><div class="tut-pet-bubble" id="tutBubble"></div><div class="tut-pet" id="tutPet">🥚</div></div>
+  <div class="tut-choices" id="tutChoices"></div>
 </div>
 
 <div class="tabbar">
@@ -591,49 +607,89 @@ function toast(msg){const e=document.querySelector('.toast');if(e)e.remove();con
 function renderAll(){renderHome();if(curTab==='shop')renderShop();if(curTab==='food'){searchFood();renderFoodDiary();renderNutriSummary();}if(curTab==='me')renderMe();if(curTab==='home')showAdvice();}
 
 // ===== 新手引导 =====
-let tutStep=0;
-const TUT_PAGES=[
-  {emoji:'🐾',title:'欢迎来到减肥宠物养成记！',desc:[{label:'你的专属宠物',text:'通过记录饮食和运动来照顾它'},{label:'坚持打卡',text:'宠物会从小蛋孵化、成长、进化'},{label:'健康生活',text:'吃健康食品、多运动，宠物会更开心！'}]},
-  {emoji:'🏠',title:'首页 - 宠物小屋',desc:[{label:'戳宠物',text:'点击宠物互动，它会随机说话'},{label:'饮水记录',text:'点 + 按钮记录饮水，每天2000ml'},{label:'查看状态',text:'健康、饱腹、步数、体重一目了然'}]},
-  {emoji:'🛒',title:'商城 - 买买买',desc:[{label:'食物',text:'购买食物喂宠物，恢复饱腹和心情'},{label:'玩具',text:'买玩具增加心情值'},{label:'家具',text:'买家具装饰宠物房间'}]},
-  {emoji:'🏃',title:'运动 - 动起来',desc:[{label:'9种运动',text:'计步、跑步、跳绳、游泳、骑行等'},{label:'实时追踪',text:'计时器 + GPS + 计步器'},{label:'消耗热量',text:'根据体重和MET值精确计算'}]},
-  {emoji:'🍽️',title:'饮食 - 记录每一餐',desc:[{label:'搜索食物',text:'156种食物，搜名字就能找到'},{label:'热量追踪',text:'自动计算热量和三大营养素'},{label:'健康评分',text:'🟢健康加分 🔴不健康扣分'}]},
-  {emoji:'👤',title:'我的 - 个人中心',desc:[{label:'个人档案',text:'填性别年龄身高，自动算BMI'},{label:'体重记录',text:'记录每日体重，看趋势变化'},{label:'每周报告',text:'自动生成每周健康报告'}]},
-];
+let ts=0,tsData={petType:'cat',petGender:'boy',petName:'',userGender:'',age:'',height:'',weight:''};
+function showTutorial(){if(localStorage.getItem('tutDone'))return;document.getElementById('tutorialOverlay').classList.add('show');ts=0;renderTut();}
+function replayTutorial(){localStorage.removeItem('tutDone');tsData={petType:'cat',petGender:'boy',petName:'',userGender:'',age:'',height:'',weight:''};showTutorial();}
 
-function showTutorial(){
-  if(localStorage.getItem('tutDone'))return;
-  document.getElementById('tutorialOverlay').classList.add('show');
-  tutStep=0;renderTut();
-}
 function renderTut(){
-  const p=TUT_PAGES[tutStep];
-  document.getElementById('tutCard').innerHTML=`
-    <div class="tut-emoji">${p.emoji}</div>
-    <h2>${p.title}</h2>
-    <div class="tut-steps">${p.desc.map(d=>`<div class="tut-step"><div class="si">${p.desc.indexOf(d)+1}</div><div class="st"><b>${d.label}</b><br>${d.text}</div></div>`).join('')}</div>
-    <div class="tut-dots">${TUT_PAGES.map((_,i)=>`<div class="tut-dot${i===tutStep?' active':''}"></div>`).join('')}</div>
-    <div class="tut-btns">
-      <button class="tut-btn-ghost" onclick="skipTut()">跳过</button>
-      <button class="tut-btn-pri" onclick="nextTut()">${tutStep<TUT_PAGES.length-1?'下一步':'开始使用 🎉'}</button>
-    </div>`;
+  const L=document.getElementById('tutStepLabel'),T=document.getElementById('tutTitle'),B=document.getElementById('tutBubble'),P=document.getElementById('tutPet'),C=document.getElementById('tutChoices');
+  L.innerHTML=`步骤 <span>${ts+1}</span>/5`;
+  P.textContent=tsData.petType==='cat'?'🐱':tsData.petType==='dog'?'🐶':'🐰';
+
+  if(ts===0){ // 选宠物种类
+    T.textContent='选择你的宠物';B.textContent='你好呀！选一只小可爱陪你减肥吧~';
+    C.innerHTML=`
+      <div class="tut-choice-row">
+        <div class="tut-choice${tsData.petType==='cat'?' selected':''}" onclick="tsSet('petType','cat')"><span class="ticon">🐱</span><span class="tname">猫咪</span><span class="tdesc">优雅独立</span></div>
+        <div class="tut-choice${tsData.petType==='dog'?' selected':''}" onclick="tsSet('petType','dog')"><span class="ticon">🐶</span><span class="tname">狗狗</span><span class="tdesc">忠诚活力</span></div>
+        <div class="tut-choice${tsData.petType==='rabbit'?' selected':''}" onclick="tsSet('petType','rabbit')"><span class="ticon">🐰</span><span class="tname">兔子</span><span class="tdesc">温柔软萌</span></div>
+      </div>
+      <button class="tut-btn tut-btn-pri" onclick="tsNext()">选好了，下一步 →</button>`;
+  }
+  else if(ts===1){ // 选宠物性别
+    T.textContent='宠物是男孩还是女孩？';B.textContent=tsData.petGender==='boy'?'我是个帅小伙！':'我是个小公主~';
+    C.innerHTML=`
+      <div class="tut-choice-row">
+        <div class="tut-choice${tsData.petGender==='boy'?' selected':''}" onclick="tsSet('petGender','boy')"><span class="ticon">♂️</span><span class="tname">男孩</span></div>
+        <div class="tut-choice${tsData.petGender==='girl'?' selected':''}" onclick="tsSet('petGender','girl')"><span class="ticon">♀️</span><span class="tname">女孩</span></div>
+      </div>
+      <button class="tut-btn tut-btn-pri" onclick="tsNext()">选好了，下一步 →</button>`;
+  }
+  else if(ts===2){ // 起名
+    T.textContent='给它起个名字吧';B.textContent=tsData.petName?'我叫'+tsData.petName+'！好听~':'给我起个名字吧！';
+    C.innerHTML=`
+      <input class="tut-input" id="tutNameInput" placeholder="输入宠物名字" value="${tsData.petName}" oninput="tsData.petName=this.value;renderTut();" autofocus>
+      <button class="tut-btn ${tsData.petName.trim()?'tut-btn-pri':'tut-btn-dis'}" onclick="if(tsData.petName.trim())tsNext()">起好了，下一步 →</button>`;
+  }
+  else if(ts===3){ // 用户档案
+    T.textContent='填写你的基本信息';B.textContent='告诉我你多大啦？我能帮你算BMI和营养推荐~';
+    C.innerHTML=`
+      <div class="tut-input-row"><select class="tut-input" id="tutUserGender" onchange="tsData.userGender=this.value;checkProfile()"><option value="">性别</option><option value="male" ${tsData.userGender==='male'?'selected':''}>男</option><option value="female" ${tsData.userGender==='female'?'selected':''}>女</option></select></div>
+      <div class="tut-input-row"><input class="tut-input" type="number" id="tutAge" placeholder="年龄" value="${tsData.age}" oninput="tsData.age=this.value;checkProfile()"><input class="tut-input" type="number" id="tutHeight" placeholder="身高cm" value="${tsData.height}" oninput="tsData.height=this.value;checkProfile()"></div>
+      <div class="tut-input-row"><input class="tut-input" type="number" id="tutWeight" placeholder="当前体重kg" value="${tsData.weight}" oninput="tsData.weight=this.value;checkProfile()"></div>
+      <button class="tut-btn ${tsData.userGender&&tsData.age&&tsData.height&&tsData.weight?'tut-btn-pri':'tut-btn-dis'}" id="tutProfileBtn" onclick="if(tsData.userGender&&tsData.age&&tsData.height&&tsData.weight)tsNext()">填好了，下一步 →</button>`;
+  }
+  else if(ts===4){ // 完成
+    T.textContent='一切就绪！';B.textContent='太棒了！我们一起减肥吧！💪';
+    C.innerHTML=`
+      <div style="text-align:center;color:#6b5b4f;font-size:14px;line-height:1.8;padding:10px;">
+        ✨ 你的宠物：<b>${tsData.petType==='cat'?'🐱猫咪':tsData.petType==='dog'?'🐶狗狗':'🐰兔子'}</b> · <b>${tsData.petName}</b><br>
+        👤 你的BMI将在"我的"页自动计算<br>
+        🏠 首页可以戳宠物 + 记录饮水<br>
+        🍽️ 饮食页搜索156种食物记录热量<br>
+        🏃 运动页9种运动实时追踪<br>
+      </div>
+      <button class="tut-btn tut-btn-pri" onclick="finishTut()">🎉 开始使用！</button>
+      <button class="tut-btn tut-btn-dis" onclick="skipTut()" style="margin-top:6px;background:none;color:#bbb;">跳过介绍，直接开始</button>`;
+  }
 }
-function nextTut(){
-  if(tutStep<TUT_PAGES.length-1){tutStep++;renderTut();}else{skipTut();}
+
+function tsSet(key,val){tsData[key]=val;renderTut();}
+function tsNext(){if(ts<4){ts++;renderTut();}}
+function checkProfile(){document.getElementById('tutProfileBtn')&&(document.getElementById('tutProfileBtn').className='tut-btn '+(tsData.userGender&&tsData.age&&tsData.height&&tsData.weight?'tut-btn-pri':'tut-btn-dis'));}
+function finishTut(){
+  // 保存到data
+  data.petType=tsData.petType;data.petName=tsData.petName;data.petGender=tsData.petGender;
+  data.profile.gender=tsData.userGender;data.profile.age=parseInt(tsData.age)||0;data.profile.height=parseInt(tsData.height)||0;
+  if(tsData.weight){const w=parseFloat(tsData.weight);if(w>0)data.weightLog.push({weight:w,date:today()});}
+  saveData();
+  localStorage.setItem('tutDone','1');
+  document.getElementById('tutorialOverlay').classList.remove('show');
+  renderAll();toast('🎉 欢迎，'+data.petName+'！');
 }
 function skipTut(){
   localStorage.setItem('tutDone','1');
   document.getElementById('tutorialOverlay').classList.remove('show');
+  if(!data.petName||data.petName==='一颗蛋'){data.petName=tsData.petName||'小可爱';saveData();}
+  renderAll();
 }
-// 重新看引导（从我的页面调用）
-function replayTutorial(){localStorage.removeItem('tutDone');showTutorial();}
 
 function init(){
   loadData();const t=today();if(data.lastLoginDate&&data.lastLoginDate!==t)checkDaily();else if(!data.lastLoginDate){data.lastLoginDate=t;data.streak=1;data.totalDays=1;data.totalCoins=data.coins||0;saveData();}checkDaily();
-  if(data.petName==='一颗蛋'){const n=prompt('给你的宠物蛋起个名字吧！');if(n&&n.trim()){data.petName=n.trim();saveData();}}
   data.foodLogs=data.foodLogs||[];data.todayCals=data.todayCals||0;data.totalCoins=data.totalCoins||data.coins||0;data.achievements=data.achievements||[];data.water=data.water||0;customFoods=JSON.parse(localStorage.getItem('petCustomFoods')||'[]');
   checkAchievements();renderAll();showAdvice();startPetWalk();
-  setTimeout(showTutorial,500);
+  // 首次打开走引导，老用户跳过
+  if(!localStorage.getItem('tutDone')&&data.petName==='一颗蛋'){setTimeout(showTutorial,400);}
 }
 init();
 </script>
