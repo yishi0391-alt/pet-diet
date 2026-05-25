@@ -120,6 +120,25 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f0e8;m
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:6px 16px;border-radius:14px;font-size:12px;z-index:200;animation:ti .3s ease,to .3s ease 1.7s forwards;}@keyframes ti{0%{opacity:0;transform:translateX(-50%)translateY(-20px)}}@keyframes to{0%{opacity:1}100%{opacity:0;transform:translateX(-50%)translateY(-20px)}}
 .evo-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:16px;border-radius:12px;text-align:center;z-index:150;box-shadow:0 8px 30px rgba(0,0,0,.2);animation:popIn .5s ease;}@keyframes popIn{0%{transform:translate(-50%,-50%)scale(0)}70%{transform:translate(-50%,-50%)scale(1.1)}100%{transform:translate(-50%,-50%)scale(1)}}
 .evo-popup .ne{font-size:54px;}.evo-popup button{margin-top:4px;padding:5px 16px;border:none;border-radius:12px;background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;font-size:13px;cursor:pointer;}
+
+/* ===== 新手引导 ===== */
+.tutorial-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);z-index:200;justify-content:center;align-items:center;flex-direction:column;}
+.tutorial-overlay.show{display:flex;}
+.tut-card{background:#fff;border-radius:20px;padding:24px 20px;width:90%;max-width:360px;text-align:center;animation:tutIn .4s ease;}
+@keyframes tutIn{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.tut-card .tut-emoji{font-size:60px;animation:float 2s ease-in-out infinite;}
+.tut-card h2{color:#f5576c;margin:8px 0 4px;font-size:20px;}
+.tut-card .tut-steps{text-align:left;margin:12px 0;}
+.tut-card .tut-step{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f5f0e8;}
+.tut-card .tut-step .si{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#ff9a9e,#f5576c);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;flex-shrink:0;}
+.tut-card .tut-step .st{flex:1;font-size:12px;color:#666;}.tut-card .tut-step .st b{color:#333;}
+.tut-card .tut-dots{display:flex;justify-content:center;gap:6px;margin:10px 0;}
+.tut-card .tut-dot{width:8px;height:8px;border-radius:50%;background:#e0d5c5;transition:all .3s;}
+.tut-card .tut-dot.active{background:#f5576c;width:24px;border-radius:4px;}
+.tut-card .tut-btns{display:flex;gap:8px;}
+.tut-card .tut-btns button{flex:1;padding:10px;border:none;border-radius:10px;font-size:14px;cursor:pointer;}
+.tut-btn-pri{background:linear-gradient(135deg,#ff9a9e,#f5576c);color:#fff;}
+.tut-btn-ghost{background:#f5f0e8;color:#999;}
 .ex-summary{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:100;justify-content:center;align-items:center;}.ex-summary.show{display:flex;}
 .summ-card{background:#fff;border-radius:12px;padding:14px;width:90%;max-width:300px;text-align:center;font-size:12px;}.summ-card h3{margin-bottom:4px;}.summ-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:4px 0;}.summ-grid .sg{background:#faf5ed;border-radius:5px;padding:5px;font-size:10px;}.summ-grid .sg .n{font-size:16px;font-weight:bold;color:#ff6b6b;}.summ-earn{font-size:14px;color:#f5576c;margin:3px 0;}
 .summ-card button{width:100%;padding:6px;border:none;border-radius:6px;font-size:13px;cursor:pointer;margin-top:2px;background:linear-gradient(135deg,#ff9a9e,#fad0c4);color:#fff;}.summ-card button.ghost{background:#eee;color:#999;}
@@ -235,13 +254,19 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f0e8;m
     <button class="me-btn me-btn-pri" onclick="showWeekly()">📊 每周报告</button>
     <button class="me-btn me-btn-pri" onclick="openWeigh()" style="background:linear-gradient(135deg,#a0c4ff,#81b0ff);">⚖️ 记录体重</button>
     <div class="me-card"><h4>⚖️ 体重记录</h4><div class="weight-list" id="weightList"><div style="text-align:center;color:#ccc;font-size:10px;">暂无记录</div></div></div>
-    <button class="me-btn me-btn-ghost" onclick="if(confirm('确定重置所有数据？')){localStorage.removeItem('petDietData');location.reload();}">🔄 重置数据</button>
+    <button class="me-btn me-btn-ghost" onclick="replayTutorial()">📖 再看一遍引导</button>
+    <button class="me-btn me-btn-ghost" onclick="if(confirm('确定重置所有数据？')){localStorage.removeItem('petDietData');localStorage.removeItem('tutDone');location.reload();}">🔄 重置数据</button>
   </div>
 </div>
 
 <!-- 弹窗 -->
 <div class="ex-summary" id="exSummary"><div class="summ-card"><h3>🏆运动完成！</h3><div class="summ-grid" id="summGrid"></div><div class="summ-earn" id="summEarn"></div><button onclick="confirmEx()">✅确认</button><button class="ghost" onclick="discardEx()">丢弃</button></div></div>
 <div class="weekly-modal" id="weeklyModal"><div class="wm-card"><h2>📊 每周报告</h2><div id="weeklyContent"></div><button onclick="document.getElementById('weeklyModal').classList.remove('show')">关闭</button></div></div>
+
+<!-- 新手引导 -->
+<div class="tutorial-overlay" id="tutorialOverlay">
+  <div class="tut-card" id="tutCard"></div>
+</div>
 
 <div class="tabbar">
   <div class="tab-item active" data-tab="home" onclick="switchTab('home')"><span class="ti">🏠</span>首页</div>
@@ -565,11 +590,50 @@ function startPetWalk(){
 function toast(msg){const e=document.querySelector('.toast');if(e)e.remove();const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),2000);}
 function renderAll(){renderHome();if(curTab==='shop')renderShop();if(curTab==='food'){searchFood();renderFoodDiary();renderNutriSummary();}if(curTab==='me')renderMe();if(curTab==='home')showAdvice();}
 
+// ===== 新手引导 =====
+let tutStep=0;
+const TUT_PAGES=[
+  {emoji:'🐾',title:'欢迎来到减肥宠物养成记！',desc:[{label:'你的专属宠物',text:'通过记录饮食和运动来照顾它'},{label:'坚持打卡',text:'宠物会从小蛋孵化、成长、进化'},{label:'健康生活',text:'吃健康食品、多运动，宠物会更开心！'}]},
+  {emoji:'🏠',title:'首页 - 宠物小屋',desc:[{label:'戳宠物',text:'点击宠物互动，它会随机说话'},{label:'饮水记录',text:'点 + 按钮记录饮水，每天2000ml'},{label:'查看状态',text:'健康、饱腹、步数、体重一目了然'}]},
+  {emoji:'🛒',title:'商城 - 买买买',desc:[{label:'食物',text:'购买食物喂宠物，恢复饱腹和心情'},{label:'玩具',text:'买玩具增加心情值'},{label:'家具',text:'买家具装饰宠物房间'}]},
+  {emoji:'🏃',title:'运动 - 动起来',desc:[{label:'9种运动',text:'计步、跑步、跳绳、游泳、骑行等'},{label:'实时追踪',text:'计时器 + GPS + 计步器'},{label:'消耗热量',text:'根据体重和MET值精确计算'}]},
+  {emoji:'🍽️',title:'饮食 - 记录每一餐',desc:[{label:'搜索食物',text:'156种食物，搜名字就能找到'},{label:'热量追踪',text:'自动计算热量和三大营养素'},{label:'健康评分',text:'🟢健康加分 🔴不健康扣分'}]},
+  {emoji:'👤',title:'我的 - 个人中心',desc:[{label:'个人档案',text:'填性别年龄身高，自动算BMI'},{label:'体重记录',text:'记录每日体重，看趋势变化'},{label:'每周报告',text:'自动生成每周健康报告'}]},
+];
+
+function showTutorial(){
+  if(localStorage.getItem('tutDone'))return;
+  document.getElementById('tutorialOverlay').classList.add('show');
+  tutStep=0;renderTut();
+}
+function renderTut(){
+  const p=TUT_PAGES[tutStep];
+  document.getElementById('tutCard').innerHTML=`
+    <div class="tut-emoji">${p.emoji}</div>
+    <h2>${p.title}</h2>
+    <div class="tut-steps">${p.desc.map(d=>`<div class="tut-step"><div class="si">${p.desc.indexOf(d)+1}</div><div class="st"><b>${d.label}</b><br>${d.text}</div></div>`).join('')}</div>
+    <div class="tut-dots">${TUT_PAGES.map((_,i)=>`<div class="tut-dot${i===tutStep?' active':''}"></div>`).join('')}</div>
+    <div class="tut-btns">
+      <button class="tut-btn-ghost" onclick="skipTut()">跳过</button>
+      <button class="tut-btn-pri" onclick="nextTut()">${tutStep<TUT_PAGES.length-1?'下一步':'开始使用 🎉'}</button>
+    </div>`;
+}
+function nextTut(){
+  if(tutStep<TUT_PAGES.length-1){tutStep++;renderTut();}else{skipTut();}
+}
+function skipTut(){
+  localStorage.setItem('tutDone','1');
+  document.getElementById('tutorialOverlay').classList.remove('show');
+}
+// 重新看引导（从我的页面调用）
+function replayTutorial(){localStorage.removeItem('tutDone');showTutorial();}
+
 function init(){
   loadData();const t=today();if(data.lastLoginDate&&data.lastLoginDate!==t)checkDaily();else if(!data.lastLoginDate){data.lastLoginDate=t;data.streak=1;data.totalDays=1;data.totalCoins=data.coins||0;saveData();}checkDaily();
   if(data.petName==='一颗蛋'){const n=prompt('给你的宠物蛋起个名字吧！');if(n&&n.trim()){data.petName=n.trim();saveData();}}
   data.foodLogs=data.foodLogs||[];data.todayCals=data.todayCals||0;data.totalCoins=data.totalCoins||data.coins||0;data.achievements=data.achievements||[];data.water=data.water||0;customFoods=JSON.parse(localStorage.getItem('petCustomFoods')||'[]');
   checkAchievements();renderAll();showAdvice();startPetWalk();
+  setTimeout(showTutorial,500);
 }
 init();
 </script>
