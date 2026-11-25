@@ -2,6 +2,8 @@
 
 移动端优先的原生 Web 个人项目，将虚拟宠物成长、金币奖励与饮食、饮水、运动记录结合。当前为前端原型，适合展示交互设计、浏览器 API 与本地状态管理。
 
+**[🌐 在线体验 PetDiet](https://harmonious-bombolone-75e568.netlify.app/)** · [查看源码](https://github.com/yishi0391-alt/pet-diet)
+
 ## 功能
 
 - 猫、狗、兔宠物选择，成长、对话、走动动画与新手引导。
@@ -39,4 +41,6 @@ HTML5 / CSS3 / 原生 JavaScript；Geolocation、DeviceMotion、LocalStorage。�
 
 ## 展示与部署
 
-尚未在本次整理中部署或验证线上地址。审核改动后可选择 GitHub Pages 的 main 分支根目录，详见 REVIEW.md。无后端、多人同步或 AI 识别能力声明。
+在线演示托管于 [Netlify](https://harmonious-bombolone-75e568.netlify.app/)。线上版本是否包含最新仓库修正仍待核对，手机传感器功能仍需实测。
+
+GitHub Pages 可作为后续部署选项，配置计划详见 REVIEW.md。当前项目无后端、多人同步或 AI 识别功能。
