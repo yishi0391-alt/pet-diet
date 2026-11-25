@@ -538,7 +538,7 @@ function exStop(){
 
   es.elapsed=Date.now()-es.startTime;if(es.elapsed<2000){toast('运动时间太短，至少2秒');resetExUI();resetEx();return;}
   const w=getUserWeight();let coins=0;
-  if(es.mode==='pedometer'){coins=Math.floor(es.steps/100)*3;coins=Math.max(5,Math.min(50,coins));es.distance=es.steps*.7/1000;es.calories=Math.floor(es.steps*.04);}
+  if(es.mode==='pedometer'){coins=Math.floor(es.steps/100)*3;coins=Math.max(5,Math.min(50,coins));es.distance=es.steps*.7;es.calories=Math.floor(es.steps*.04);}
   else if(es.mode==='run'){coins=Math.floor(es.distance/100)*5;coins=Math.max(5,Math.min(60,coins));es.calories=Math.floor(es.distance/1000*60);}
   else{const met=EX_MET[es.mode]||5;es.calories=Math.round(met*w*(es.elapsed/3600000));coins=Math.floor(es.calories/8);coins=Math.max(5,Math.min(60,coins));}
   es.summary={mode:es.mode,steps:es.steps,distance:es.distance,calories:es.calories,duration:es.elapsed,coins};
@@ -567,7 +567,7 @@ function updateEx(){
 
 function showExSumm(){
   const s=es.summary;if(!s)return;
-  document.getElementById('summGrid').innerHTML=`<div class="sg"><div class="n">${ft(s.duration)}</div><div class="l">时长</div></div><div class="sg"><div class="n">${s.steps||0}</div><div class="l">${es.mode==='pedometer'?'步数':'计数'}</div></div><div class="sg"><div class="n">${(s.distance||0).toFixed(2)}</div><div class="l">距离km</div></div><div class="sg"><div class="n">${s.calories}</div><div class="l">消耗kcal</div></div>`;
+  document.getElementById('summGrid').innerHTML=`<div class="sg"><div class="n">${ft(s.duration)}</div><div class="l">时长</div></div><div class="sg"><div class="n">${s.steps||0}</div><div class="l">${es.mode==='pedometer'?'步数':'计数'}</div></div><div class="sg"><div class="n">${((s.distance||0)/1000).toFixed(2)}</div><div class="l">距离km</div></div><div class="sg"><div class="n">${s.calories}</div><div class="l">消耗kcal</div></div>`;
   document.getElementById('summEarn').textContent=`💰 +${s.coins} 金币`;
   document.getElementById('exSummary').classList.add('show');
 }
